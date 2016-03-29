@@ -29,12 +29,12 @@ class ViewController: UIViewController {
 
         super.viewDidLoad()
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
         monthLabel.setText(NSDate().monthName, animationDirection: TextAnimationDirection.none)
         
-        leftButton.addTarget(self, action: Selector("previousMonthButton"), forControlEvents: UIControlEvents.TouchUpInside)
-        rightButton.addTarget(self, action: Selector("nextMonthButton"), forControlEvents: UIControlEvents.TouchUpInside)
-        refreshButton.addTarget(self, action: Selector("refreshCurrentMonth"), forControlEvents: UIControlEvents.TouchUpInside)
+        leftButton.addTarget(self, action: #selector(previousMonthButton), forControlEvents: UIControlEvents.TouchUpInside)
+        rightButton.addTarget(self, action: #selector(nextMonthButton), forControlEvents: UIControlEvents.TouchUpInside)
+        refreshButton.addTarget(self, action: #selector(refreshCurrentMonth), forControlEvents: UIControlEvents.TouchUpInside)
         scrollView.pagingEnabled = true
         scrollView.scrollEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
