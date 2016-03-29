@@ -11,11 +11,9 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var refreshButton: UIButton!
-    @IBOutlet weak var leftButton: UIButton!
-    @IBOutlet weak var rightButton: UIButton!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var container: UIView!
-    @IBOutlet weak var monthLabel: MonthLabel!
+    @IBOutlet weak var monthPickerView: MonthPickerView!
     
     private var currentMonthNumber = NSDate.monthsSinceReferenceDate
     private let dataSource = DataSource()
@@ -30,10 +28,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(rotated), name: UIDeviceOrientationDidChangeNotification, object: nil)
-        monthLabel.setText(NSDate().monthName, animationDirection: TextAnimationDirection.none)
         
-        leftButton.addTarget(self, action: #selector(previousMonthButton), forControlEvents: UIControlEvents.TouchUpInside)
-        rightButton.addTarget(self, action: #selector(nextMonthButton), forControlEvents: UIControlEvents.TouchUpInside)
+        monthPickerView.date = NSDate()
+        monthPickerView.delegate = self
+        
         refreshButton.addTarget(self, action: #selector(refreshCurrentMonth), forControlEvents: UIControlEvents.TouchUpInside)
         scrollView.pagingEnabled = true
         scrollView.scrollEnabled = true
@@ -60,6 +58,7 @@ class ViewController: UIViewController {
         self.regenerateHorizontalConstraints()
     }
 
+    
     override func viewDidAppear(animated: Bool) {
 
         // initially put us on the middle portion of the scrollview. Doesn't work before didAppear.
@@ -99,7 +98,7 @@ class ViewController: UIViewController {
 
         currentMonthNumber -= 1
 
-        monthLabel.setText(dataSource.monthLabel(currentMonthNumber), animationDirection:TextAnimationDirection.right)
+        monthPickerView.date = monthPickerView.previousMonthFrom(monthPickerView.date)
 
         graphViews[2].removeFromSuperview()
         graphViews.removeLast()
@@ -121,7 +120,7 @@ class ViewController: UIViewController {
 
         currentMonthNumber += 1
 
-        monthLabel.setText(dataSource.monthLabel(currentMonthNumber), animationDirection:TextAnimationDirection.right)
+        monthPickerView.date = monthPickerView.nextMonthFrom(monthPickerView.date)
 
         graphViews[0].removeFromSuperview()
         graphViews.removeFirst()
@@ -175,3 +174,9 @@ extension ViewController : UIScrollViewDelegate {
     }
 }
 
+
+extension ViewController: MonthPickerViewDelegate {
+    func monthPickerViewChangedDate(sender: MonthPickerView, newDate: NSDate) {
+        // TODO: refresh chart
+    }
+}
